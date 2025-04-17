@@ -25,3 +25,7 @@ provider "aws" {
     }
   }
 }
+
+locals {
+  project = "whatsapp-ai-chatbot"
+}
