@@ -16,10 +16,10 @@ module "send_message_codepipeline" {
   codestar_connection_arn  = aws_codestarconnections_connection._.arn
   repository_id            = "tomwatsonqa/whatsapp-ai-chatbot"
   branch_name              = "main"
-  buildspec_path           = "/app/send_message/buildspec.yml"
+  buildspec_path           = "./app/send_message/buildspec.yml"
   codepipeline_bucket_name = aws_s3_bucket.codepipeline.id
   lambda_bucket_name       = aws_s3_bucket.lambda_source.id
-  file_paths               = ["/app/send_message/*"]
+  file_paths               = ["./app/send_message/*"]
 
   depends_on = [
     module.send_message_lambda
