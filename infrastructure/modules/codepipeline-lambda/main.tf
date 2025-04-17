@@ -158,12 +158,26 @@ resource "aws_codebuild_project" "update_lambda" {
 }
 
 resource "aws_codepipeline" "_" {
-  name     = var.name
-  role_arn = aws_iam_role._.arn
+  name          = var.name
+  pipeline_type = "V2"
+  role_arn      = aws_iam_role._.arn
 
   artifact_store {
     location = data.aws_s3_bucket.codepipeline.id
     type     = "S3"
+  }
+
+  trigger {
+    provider_type = "CodeStarSourceConnection"
+
+    git_configuration {
+      source_action_name = "Source"
+      push {
+        file_paths {
+          includes = var.file_paths
+        }
+      }
+    }
   }
 
   stage {

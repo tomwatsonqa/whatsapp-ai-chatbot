@@ -32,3 +32,8 @@ variable "buildspec_path" {
   description = "The path to the buildspec file"
   type        = string
 }
+
+variable "file_paths" {
+  description = "A list of patterns of Git repository file paths that, when a commit is pushed, are to be included as criteria that starts the pipeline"
+  type        = list(string)
+}
