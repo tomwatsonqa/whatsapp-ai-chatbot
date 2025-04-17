@@ -19,7 +19,7 @@ module "send_message_codepipeline" {
   buildspec_path           = "./app/send_message/buildspec.yml"
   codepipeline_bucket_name = aws_s3_bucket.codepipeline.id
   lambda_bucket_name       = aws_s3_bucket.lambda_source.id
-  file_paths               = ["app/send_message/**/*.py"]
+  file_paths               = ["app/send_message/**"]
 
   depends_on = [
     module.send_message_lambda
