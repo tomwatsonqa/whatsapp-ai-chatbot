@@ -150,9 +150,9 @@ resource "aws_codebuild_project" "update_lambda" {
 
       phases:
         build:
-          commands:
+          commands: 
               aws lambda update-function-code --function-name $FUNCTION_NAME --s3-bucket $BUCKET --s3-key $KEY
-
+    
     EOF
   }
 }
