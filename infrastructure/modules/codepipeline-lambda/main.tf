@@ -119,7 +119,7 @@ resource "aws_codebuild_project" "build_package" {
   }
 
   source {
-    type      = "NO_SOURCE"
+    type      = "CODEPIPELINE"
     buildspec = <<EOF
       version: 0.2
 
@@ -256,11 +256,12 @@ resource "aws_codepipeline" "_" {
     name = "Update-Lambda"
 
     action {
-      name     = "Update-Lambda"
-      category = "Build"
-      owner    = "AWS"
-      provider = "CodeBuild"
-      version  = "1"
+      name            = "Update-Lambda"
+      category        = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      version         = "1"
+      input_artifacts = ["build_output"]
 
       configuration = {
         ProjectName = aws_codebuild_project.update_lambda.name
