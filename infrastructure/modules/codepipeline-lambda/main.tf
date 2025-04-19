@@ -99,9 +99,9 @@ resource "aws_iam_role_policy" "_" {
   policy = data.aws_iam_policy_document.send_message_policy_document.json
 }
 
-resource "aws_codebuild_project" "buildspec" {
+resource "aws_codebuild_project" "build_package" {
   name           = "${var.name}-build"
-  description    = "Buildspec"
+  description    = "Build package"
   build_timeout  = "20"
   queued_timeout = "5"
 
@@ -119,8 +119,20 @@ resource "aws_codebuild_project" "buildspec" {
   }
 
   source {
-    type      = "CODEPIPELINE"
-    buildspec = var.buildspec_path
+    type      = "NO_SOURCE"
+    buildspec = <<EOF
+      version: 0.2
+
+      phases:
+        build:
+          commands: 
+            - pip3 install $MODULE_PATH -t ./package
+
+      artifacts:
+        files:
+          - "./package/**"
+
+    EOF
   }
 }
 
@@ -213,7 +225,7 @@ resource "aws_codepipeline" "_" {
       version          = "1"
 
       configuration = {
-        ProjectName = aws_codebuild_project.buildspec.name
+        ProjectName = aws_codebuild_project.build_package.name
       }
     }
   }
@@ -238,16 +250,17 @@ resource "aws_codepipeline" "_" {
     }
   }
 
+
+
   stage {
     name = "Update-Lambda"
 
     action {
-      name            = "Update-Lambda"
-      category        = "Build"
-      owner           = "AWS"
-      provider        = "CodeBuild"
-      input_artifacts = ["build_output"]
-      version         = "1"
+      name     = "Update-Lambda"
+      category = "Build"
+      owner    = "AWS"
+      provider = "CodeBuild"
+      version  = "1"
 
       configuration = {
         ProjectName = aws_codebuild_project.update_lambda.name
