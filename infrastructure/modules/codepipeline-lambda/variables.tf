@@ -28,7 +28,7 @@ variable "branch_name" {
   type        = string
 }
 
-variable "file_paths" {
-  description = "A list of patterns of Git repository file paths that, when a commit is pushed, are to be included as criteria that starts the pipeline"
-  type        = list(string)
+variable "module_name" {
+  description = "The name of the python module"
+  type        = string
 }

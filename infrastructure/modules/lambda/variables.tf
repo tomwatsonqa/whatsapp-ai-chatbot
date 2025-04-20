@@ -13,3 +13,8 @@ variable "source_bucket" {
   description = "The S3 bucket the source is stored in"
   type        = string
 }
+
+variable "module_name" {
+  description = "The name of the python module"
+  type        = string
+}

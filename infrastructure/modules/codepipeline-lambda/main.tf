@@ -81,6 +81,13 @@ data "aws_iam_policy_document" "send_message_policy_document" {
   }
 
   statement {
+    actions = [
+      "lambda:UpdateFunctionCode"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
     effect = "Allow"
 
     actions = [
@@ -126,11 +133,11 @@ resource "aws_codebuild_project" "build_package" {
       phases:
         build:
           commands: 
-            - pip3 install $MODULE_PATH -t ./package
+            - pip install $MODULE_PATH -t ./${var.module_name}
 
       artifacts:
         files:
-          - "./package/**"
+          - "./${var.module_name}/**"
 
     EOF
   }
@@ -186,7 +193,7 @@ resource "aws_codepipeline" "_" {
       source_action_name = "Source"
       push {
         file_paths {
-          includes = var.file_paths
+          includes = ["lambdas/${var.module_name}/**"]
         }
       }
     }
@@ -226,6 +233,12 @@ resource "aws_codepipeline" "_" {
 
       configuration = {
         ProjectName = aws_codebuild_project.build_package.name
+        EnvironmentVariables = jsonencode([
+          {
+            name  = "MODULE_PATH"
+            value = "./lambdas/${var.module_name}"
+          }
+        ])
       }
     }
   }

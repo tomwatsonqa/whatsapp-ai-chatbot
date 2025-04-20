@@ -1,5 +1,6 @@
 locals {
-  name = "${local.project}-send-message-lambda"
+  name        = "${local.project}-send-message-lambda"
+  module_name = "send_message"
 }
 
 module "send_message_lambda" {
@@ -7,6 +8,7 @@ module "send_message_lambda" {
 
   name          = local.name
   source_bucket = aws_s3_bucket.lambda_source.id
+  module_name   = local.module_name
 }
 
 module "send_message_codepipeline" {
@@ -18,7 +20,7 @@ module "send_message_codepipeline" {
   branch_name              = "main"
   codepipeline_bucket_name = aws_s3_bucket.codepipeline.id
   lambda_bucket_name       = aws_s3_bucket.lambda_source.id
-  file_paths               = ["lambdas/send_message/**"]
+  module_name              = local.module_name
 
   depends_on = [
     module.send_message_lambda

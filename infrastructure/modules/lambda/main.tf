@@ -50,8 +50,8 @@ resource "aws_iam_role_policy_attachment" "_" {
 resource "aws_lambda_function" "_" {
   function_name = var.name
   role          = aws_iam_role._.arn
-  handler       = "main"
-  runtime       = "provided.al2023"
+  handler       = "${var.module_name}.index.lambda_handler"
+  runtime       = "python3.13"
 
   s3_bucket = var.source_bucket
   s3_key    = var.name
